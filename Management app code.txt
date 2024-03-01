@@ -1,0 +1,113 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Scanner;
+
+class Event {
+    String eventName;
+    String location;
+    Date startDate;
+    Date endDate;
+    List<String> attendees;
+
+    Event(String eventName, String location, Date startDate, Date endDate) {
+        this.eventName = eventName;
+        this.location = location;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.attendees = new ArrayList<>();
+    }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        return "Event: " + eventName + "\nLocation: " + location +
+                "\nStart Date: " + dateFormat.format(startDate) +
+                "\nEnd Date: " + dateFormat.format(endDate) +
+                "\nAttendees: " + attendees.size();
+    }
+}
+
+public class EventManagementSystem {
+    private static final List<Event> events = new ArrayList<>();
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        System.out.println("Welcome to Event Management System");
+
+        while (true) {
+            System.out.println("\n1. Create Event\n2. View Events\n3. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    createEvent();
+                    break;
+                case 2:
+                    viewEvents();
+                    break;
+                case 3:
+                    System.out.println("Thank you for using Event Management System");
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    private static void createEvent() {
+        scanner.nextLine(); // Consume the newline character
+
+        System.out.print("Enter Event Name: ");
+        String eventName = scanner.nextLine();
+
+        System.out.print("Enter Location: ");
+        String location = scanner.nextLine();
+
+        System.out.print("Enter Start Date and Time (yyyy-MM-dd HH:mm): ");
+        Date startDate = parseDate(scanner.nextLine());
+
+        System.out.print("Enter End Date and Time (yyyy-MM-dd HH:mm): ");
+        Date endDate = parseDate(scanner.nextLine());
+
+        Event event = new Event(eventName, location, startDate, endDate);
+
+        System.out.print("Enter the number of attendees: ");
+        int numAttendees = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        for (int i = 0; i < numAttendees; i++) {
+            System.out.print("Enter Attendee Name: ");
+            String attendeeName = scanner.nextLine();
+            event.attendees.add(attendeeName);
+        }
+
+        events.add(event);
+        System.out.println("Event created successfully!");
+    }
+
+    private static void viewEvents() {
+        if (events.isEmpty()) {
+            System.out.println("No events available.");
+            return;
+        }
+
+        System.out.println("\nAvailable Events:");
+        for (Event event : events) {
+            System.out.println("\n" + event + "\n---------------------");
+        }
+    }
+
+    private static Date parseDate(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            return dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            System.out.println("Error parsing date. Please use the format yyyy-MM-dd HH:mm");
+            return null;
+        }
+    }
+}
